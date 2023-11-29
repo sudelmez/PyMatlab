@@ -2,6 +2,8 @@ import pandas as pd
 from tkinter import filedialog
 import tkinter as tk
 import re
+from matlabFunc import makeGraphic
+#pip install openpyxl
 
 print("started")
 root = tk.Tk()
@@ -39,4 +41,14 @@ output_file_path = "/Users/sudeolmez/Desktop/" + input("Lütfen dışarı aktar�
 with pd.ExcelWriter(output_file_path) as writer:
     merged_df.to_excel(writer, sheet_name='Merged Data', index=False)
 
-print("İşlemler tamamlandı, Tebrikler!")
+print("Kaydetme işlemi tamamlandı.")
+
+filtered_df_CC = merged_df[merged_df['Channel'] == 'CC']
+filtered_df_CC['Problem'].fillna('', inplace=True)
+listCCProblem = [0 if problem == '' else nps for problem, nps in zip(filtered_df_CC['Problem'].values, filtered_df_CC['Nps Score'].values)]
+makeGraphic(filtered_df_CC['Date'].values, filtered_df_CC['Nps Score'].values, listCCProblem)
+
+filtered_df_7000 = merged_df[merged_df['Channel'] == '7000']
+filtered_df_7000['Problem'].fillna('', inplace=True)
+list7000Problem = [0 if problem == '' else nps for problem, nps in zip(filtered_df_7000['Problem'].values, filtered_df_7000['Nps Score'].values)]
+makeGraphic(filtered_df_7000['Date'].values, filtered_df_7000['Nps Score'].values, list7000Problem)
